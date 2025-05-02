@@ -1,0 +1,55 @@
+﻿## Build results
+bin/
+obj/
+out/
+[Ll]og/
+TestResults/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Rider and VS Code
+.idea/
+.vscode/
+*.code-workspace
+
+## ASP.NET Core
+wwwroot/dist/
+wwwroot/node_modules/
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.Secrets.json
+
+## dotCover
+*.dotCover
+
+## Node (if using frontend tooling like Angular/React)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+
+## Log files
+*.log
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+
+## Entity Framework Migrations snapshot files (optional)
+*MigrationsSnapshot.cs
+
+## Publish output
+publish/
