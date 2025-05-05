@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\RatingTracker.Infrastructure\RatingTracker.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
