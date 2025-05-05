@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: ./server/src
+      dockerfile: RatingTracker.Api/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - app-network
+
+  client:
+    build:
+      context: ./client/rating-tracker
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+    depends_on:
+      - server
+
+networks:
+  app-network:
