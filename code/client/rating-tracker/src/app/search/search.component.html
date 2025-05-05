@@ -1,0 +1,22 @@
+<div class="setup-form" [formGroup]="searchForm">
+  <h2>Check Ranking</h2>
+  <form (ngSubmit)="onSubmit()">
+    <label for="keyword">Keyword</label>
+    <input id="keyword" formControlName="keyword" />
+
+    <label for="targetDomain">Website</label>
+    <input id="targetDomain" formControlName="targetDomain" />
+
+    <button type="submit" [disabled]="searchForm.invalid || loading">
+      {{ loading ? "Searching..." : "Check Rank" }}
+    </button>
+  </form>
+
+  <!-- <div *ngIf="ranks.length">
+      <h3>Results</h3>
+      <p *ngIf="ranks[0] === 0">❌ Not found in top results.</p>
+      <ul>
+        <li *ngFor="let rank of ranks">✅ Found at position: {{ rank }}</li>
+      </ul>
+    </div> -->
+</div>
