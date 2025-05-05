@@ -1,5 +1,5 @@
 using RatingTracker.Application.Services;
-using RatingTracker.Infrastructure.SearchEngineCrawler;
+using RatingTracker.Infrastructure.ScraperServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,13 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApiDocument(); // instead of AddSwaggerGen
 
 builder.Services.AddTransient<ISearchService, SearchService>();
-builder.Services.AddTransient<ISearchEngineCrawlerFactory, SearchEngineCrawlerFactory>();
+builder.Services.AddTransient<IScraperFactory, ScraperFactory>();
+
+builder.Services.AddHttpClient<GoogleScraperService>();
+builder.Services.AddHttpClient<BingScraperService>();
+builder.Services.AddSingleton<IScraperFactory, ScraperFactory>();
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDev", policy =>
