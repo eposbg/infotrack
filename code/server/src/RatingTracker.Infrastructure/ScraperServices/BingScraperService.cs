@@ -14,7 +14,7 @@ public class BingScraperService: ScraperServiceBase, IScraperService
         _logger = logger;
        
     }
-    public async Task<SearchResult> GetSearchRanksAsync(string keywords, string targetDomain, int maxResults = 100, CancellationToken token = default)
+    public async Task<SearchEngineRanks> GetSearchRanksAsync(string keywords, string targetDomain, int maxResults = 100, CancellationToken token = default)
     {
         var encodedKeyword = Uri.EscapeDataString(keywords);
         var searchUrl = $"https://www.bing.com/search?q={encodedKeyword}&count=100";
@@ -57,8 +57,12 @@ public class BingScraperService: ScraperServiceBase, IScraperService
 
         var urls = matches.Select(m => HttpUtility.HtmlDecode(m.Groups[1].Value)).ToList();
 
-        return GetRanking(urls, targetDomain);
-        
-       
+        return new SearchEngineRanks
+        {
+            SearchEngine = "Bing",
+            Ranks = GetRanking(urls, targetDomain)
+        };
+
+
     }
 }

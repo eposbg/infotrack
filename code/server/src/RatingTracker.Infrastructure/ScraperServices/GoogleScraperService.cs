@@ -14,7 +14,7 @@ public class GoogleScraperService : ScraperServiceBase, IScraperService
         _logger = logger;
     }
 
-    public async Task<SearchResult> GetSearchRanksAsync(
+    public async Task<SearchEngineRanks> GetSearchRanksAsync(
         string keywords,
         string targetDomain,
         int maxResults = 100,
@@ -41,19 +41,12 @@ public class GoogleScraperService : ScraperServiceBase, IScraperService
         string html = await response.Content.ReadAsStringAsync();
         var matches = Regex.Matches(html, @"<a href=""/url\?q=(.*?)&amp;");
         var urls = matches.Select(m => HttpUtility.HtmlDecode(m.Groups[1].Value)).ToList();
-
-        var result = new SearchResult();
-        for (int i = 0; i < urls.Count; i++)
+        
+        return new SearchEngineRanks
         {
-            if (urls[i].Contains(targetDomain, StringComparison.OrdinalIgnoreCase))
-            {
-                result.Ranks.Add(i + 1); // Google is 1-indexed
-            }
-        }
-
-        if (!result.Ranks.Any())
-            result.Ranks.Add(0); // not found
-
-        return result;
+            SearchEngine = "Google",
+            Ranks = GetRanking(urls, targetDomain)
+        };
+        
     }
 }

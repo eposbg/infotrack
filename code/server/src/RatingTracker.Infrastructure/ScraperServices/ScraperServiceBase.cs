@@ -14,20 +14,17 @@ public abstract class ScraperServiceBase
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36");
     }
 
-    protected SearchResult GetRanking(List<string> urlsFound, string targetDomain)
+    protected List<int> GetRanking(List<string> urlsFound, string targetDomain)
     {
-        var result = new SearchResult();
+        var result = new List<int>();
          
         for (int i = 0; i < urlsFound.Count(); i++)
         {
             if (urlsFound[i].Contains(targetDomain, StringComparison.OrdinalIgnoreCase))
             {
-                result.Ranks.Add(i + 1); // 1-indexed
+                result.Add(i + 1); // 1-indexed
             }
         }
-
-        if (!result.Ranks.Any())
-            result.Ranks.Add(0);
 
         return result;
     }

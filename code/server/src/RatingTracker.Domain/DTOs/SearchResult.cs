@@ -2,5 +2,5 @@
 
 public class SearchResult
 {
-    public List<int> Ranks { get; set; } = new(); 
+    public List<SearchEngineRanks> Ranks { get; set; } = new(); 
 }
