@@ -7,7 +7,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { SearchService } from './search.service';
-import { provideHttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-search',
@@ -24,8 +23,9 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
-      keyword: ['', [Validators.required]],
-      targetDomain: ['', [Validators.required]],
+      keyword: ['land registry search', [Validators.required]],
+      targetDomain: ['infotrack.co.uk', [Validators.required]],
+      top: ['100', [Validators.required]],
     });
   }
 
