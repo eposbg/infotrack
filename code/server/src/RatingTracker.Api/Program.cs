@@ -10,6 +10,15 @@ builder.Services.AddOpenApiDocument(); // instead of AddSwaggerGen
 
 builder.Services.AddTransient<ISearchService, SearchService>();
 builder.Services.AddTransient<ISearchEngineCrawlerFactory, SearchEngineCrawlerFactory>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // 👈 adjust for your frontend port
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 
 var app = builder.Build();
@@ -18,12 +27,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
-    app.UseSwaggerUi(); 
+    app.UseSwaggerUi();
 }
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseCors("AllowAngularDev");
 
 app.MapControllers();
 
