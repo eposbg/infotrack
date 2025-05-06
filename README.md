@@ -15,5 +15,11 @@ The project is fully containerized and designed to be run using **Docker Compose
 
 ### ▶️ Run the App
 
+The docker compose file is located under Code folder in the root of the project. Run the following command.
+
 ```bash
 docker compose up --build
+
+
+Access the UI from the browser: http://localhost:8080
+
