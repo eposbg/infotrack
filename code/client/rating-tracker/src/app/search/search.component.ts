@@ -11,7 +11,9 @@ import { SearchResult } from './models';
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { Fluid, FluidModule } from 'primeng/fluid';
+import { FluidModule } from 'primeng/fluid';
+import { DividerModule } from 'primeng/divider';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
   selector: 'app-search',
@@ -22,6 +24,8 @@ import { Fluid, FluidModule } from 'primeng/fluid';
     ButtonModule,
     InputTextModule,
     FluidModule,
+    DividerModule,
+    BadgeModule,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',

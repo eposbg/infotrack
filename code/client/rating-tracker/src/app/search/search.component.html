@@ -2,25 +2,22 @@
   <form (submit)="onSubmit()">
     <p-fluid class="card flex flex-wrap gap-4">
       <div class="flex-auto">
-        <label for="search_for">Search for</label>
+        <label for="search_for">Search for keywords</label>
 
         <input
           pInputText
           id="search_for"
           formControlName="keyword"
           autocomplete="off"
-          placeholder="Search by keywords"
         />
+        <small id="targetDomain">Example:News</small>
       </div>
+
       <div class="flex-auto">
         <label for="search_for">Target domain</label>
 
-        <input
-          pInputText
-          id="domain"
-          formControlName="targetDomain"
-          placeholder="Target domain"
-        />
+        <input pInputText id="domain" formControlName="targetDomain" />
+        <small id="targetDomain">Example: www.bbc.co.uk</small>
       </div>
     </p-fluid>
 
@@ -34,16 +31,21 @@
       </p-button>
     </div>
   </form>
-</p-panel>
 
-@if(searchResult){
-<div class="panel">
+  @if(searchResult){
+  <p-divider />
   <div *ngFor="let engineResults of searchResult.ranks">
     <h3>{{ engineResults.searchEngine }}</h3>
-    Ranks
-    <div *ngFor="let result of engineResults.ranks">
-      <p>Rank: {{ result }}</p>
+
+    <div class="card flex justify-center gap-2">
+      Ranks:
+      <p-badge
+        *ngFor="let result of engineResults.ranks"
+        [value]="result"
+        severity="secondary"
+      />
     </div>
   </div>
-</div>
-}
+
+  }
+</p-panel>
