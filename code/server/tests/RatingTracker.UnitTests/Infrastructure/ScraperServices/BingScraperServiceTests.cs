@@ -1,8 +1,10 @@
 ﻿using System.Net;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
+using RatingTracker.Domain.Settings;
 using RatingTracker.Infrastructure.ScraperServices;
 
 namespace RatingTracker.UnitTests.Infrastructure.ScraperServices;
@@ -20,6 +22,8 @@ public class BingScraperServiceTests
                    """;
 
         var handlerMock = new Mock<HttpMessageHandler>();
+        var options = CreateOptions("https://www.bing.com/search?q={query}&count={count}&first={start}");
+
         handlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -34,7 +38,7 @@ public class BingScraperServiceTests
 
         var httpClient = new HttpClient(handlerMock.Object);
         var logger = Mock.Of<ILogger<BingScraperService>>();
-        var service = new BingScraperService(httpClient, logger);
+        var service = new BingScraperService(httpClient, logger, options);
 
         // Act
         var result = await service.GetSearchRanksAsync("land registry searches", "infotrack.co.uk");
@@ -55,6 +59,7 @@ public class BingScraperServiceTests
                    """;
 
         var handlerMock = new Mock<HttpMessageHandler>();
+        var options = CreateOptions("https://www.bing.com/search?q={query}&count={count}&first={start}");
         handlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
@@ -67,7 +72,7 @@ public class BingScraperServiceTests
 
         var httpClient = new HttpClient(handlerMock.Object);
         var logger = Mock.Of<ILogger<BingScraperService>>();
-        var service = new BingScraperService(httpClient, logger);
+        var service = new BingScraperService(httpClient, logger, options);
 
         // Act
         var result = await service.GetSearchRanksAsync("land registry searches", "infotrack.co.uk");
@@ -89,8 +94,9 @@ public class BingScraperServiceTests
 
         var httpClient = new HttpClient(handlerMock.Object);
         var loggerMock = new Mock<ILogger<BingScraperService>>();
+        var options = CreateOptions("https://www.bing.com/search?q={query}&count={count}&first={start}");
 
-        var service = new BingScraperService(httpClient, loggerMock.Object);
+        var service = new BingScraperService(httpClient, loggerMock.Object, options);
 
         // Act
         var result = await service.GetSearchRanksAsync("land registry searches", "infotrack.co.uk");
@@ -106,4 +112,13 @@ public class BingScraperServiceTests
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
+    
+    private static IOptions<SearchEngineOptions> CreateOptions(string urlTemplate)
+    {
+        return Options.Create(new SearchEngineOptions
+        {
+            BingUrlTemplate = urlTemplate
+        });
+    }
+
 }

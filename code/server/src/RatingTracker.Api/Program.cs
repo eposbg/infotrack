@@ -1,4 +1,5 @@
 using RatingTracker.Application.Services;
+using RatingTracker.Domain.Settings;
 using RatingTracker.Infrastructure.ScraperServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,9 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+builder.Services.Configure<SearchEngineOptions>(builder.Configuration.GetSection("SearchEngines"));
+
 
 
 var app = builder.Build();

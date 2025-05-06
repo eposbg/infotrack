@@ -1,17 +1,22 @@
 ﻿using System.Text.RegularExpressions;
 using System.Web;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RatingTracker.Domain.DTOs;
+using RatingTracker.Domain.Settings;
 
 namespace RatingTracker.Infrastructure.ScraperServices;
 
 public class BingScraperService : ScraperServiceBase, IScraperService
 {
     private readonly ILogger<BingScraperService> _logger;
+    private readonly string _urlTemplate;
 
-    public BingScraperService(HttpClient httpClient, ILogger<BingScraperService> logger) : base(httpClient)
+    public BingScraperService(HttpClient httpClient, ILogger<BingScraperService> logger,
+        IOptions<SearchEngineOptions> options) : base(httpClient)
     {
         _logger = logger;
+        _urlTemplate = options.Value.BingUrlTemplate;
     }
 
     public async Task<SearchEngineRanks> GetSearchRanksAsync(
@@ -28,7 +33,12 @@ public class BingScraperService : ScraperServiceBase, IScraperService
         try
         {
             var encodedKeyword = Uri.EscapeDataString(keywords);
-            var searchUrl = $"https://www.bing.com/search?q={encodedKeyword}&count=100&first=50";
+            var searchUrl =
+                _urlTemplate
+                    .Replace("{query}", encodedKeyword)
+                    .Replace("{count}", maxResults.ToString())
+                    .Replace("{start}", "0");
+                
             _logger.LogInformation($"Query Url {searchUrl}");
             var html = await HttpClient.GetStringAsync(searchUrl, cancellationToken);
 
