@@ -10,14 +10,14 @@
           formControlName="keyword"
           autocomplete="off"
         />
-        <small id="targetDomain">Example:News</small>
+        <small id="targetDomain">e.g.: <a (click)="onExampleKeywordsClick()">News</a> </small>
       </div>
 
       <div class="flex-auto">
         <label for="search_for">Target domain</label>
 
         <input pInputText id="domain" formControlName="targetDomain" />
-        <small id="targetDomain">Example: www.bbc.co.uk</small>
+        <small id="targetDomain">e.g.: <a (click)="onExampleDomainClick()">www.bbc.co.uk</a></small>
       </div>
     </p-fluid>
 

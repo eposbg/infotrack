@@ -69,4 +69,12 @@ export class SearchComponent implements OnInit {
         },
       });
   }
+
+  onExampleKeywordsClick() {
+    this.searchForm.get('keyword')?.setValue('News');
+  }
+
+  onExampleDomainClick() {
+    this.searchForm.get('targetDomain')?.setValue('www.bbc.co.uk');
+  }
 }
