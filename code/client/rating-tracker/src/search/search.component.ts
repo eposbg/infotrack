@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { SearchService } from './search.service';
+import { SearchEngineResult, SearchResult } from './models';
 
 @Component({
   selector: 'app-search',
@@ -18,6 +19,7 @@ import { SearchService } from './search.service';
 export class SearchComponent implements OnInit {
   searchForm!: FormGroup;
   loading = false;
+  searchResult?: SearchResult;
 
   constructor(private fb: FormBuilder, private searchService: SearchService) {}
 
@@ -30,8 +32,9 @@ export class SearchComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.searchForm.value);
     if (this.searchForm.invalid) return;
+
+    this.loading = true;
 
     this.searchService
       .search({
@@ -40,8 +43,14 @@ export class SearchComponent implements OnInit {
         maxResults: 100,
       })
       .subscribe({
-        next: (res) => {},
+        next: (res) => {
+          this.loading = false;
+          this.searchResult = res;
+          console.log(res);
+          
+        },
         error: (err) => {
+          this.loading = false;
           console.error(err);
         },
       });

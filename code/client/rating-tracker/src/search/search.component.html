@@ -19,4 +19,16 @@
       {{ loading ? "Searching..." : "Check Rank" }}
     </button>
   </form>
+
+  @if(searchResult){
+  <div class="panel">
+    <div *ngFor="let engineResults of searchResult.ranks">
+      <h3>{{ engineResults.searchEngine }}</h3>
+      Ranks
+      <div *ngFor="let result of engineResults.ranks">
+        <p>Rank: {{ result }}</p>
+      </div>
+    </div>
+  </div>
+  }
 </div>
