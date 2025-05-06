@@ -1,29 +1,37 @@
 using RatingTracker.Application.Services;
-using RatingTracker.Infrastructure.SearchEngineCrawler;
+using RatingTracker.Domain.Settings;
+using RatingTracker.Infrastructure.ScraperServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-builder.Services.AddOpenApiDocument(); // instead of AddSwaggerGen
+builder.Services.AddOpenApiDocument(); 
 
 builder.Services.AddTransient<ISearchService, SearchService>();
-builder.Services.AddTransient<ISearchEngineCrawlerFactory, SearchEngineCrawlerFactory>();
+builder.Services.AddTransient<IScraperFactory, ScraperFactory>();
+
+builder.Services.AddHttpClient<GoogleScraperService>();
+builder.Services.AddHttpClient<BingScraperService>();
+builder.Services.AddSingleton<IScraperFactory, ScraperFactory>();
+
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDev", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // 👈 adjust for your frontend port
+        policy.WithOrigins(allowedOrigins ?? [])
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 
+builder.Services.Configure<SearchEngineOptions>(builder.Configuration.GetSection("SearchEngines"));
+
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();

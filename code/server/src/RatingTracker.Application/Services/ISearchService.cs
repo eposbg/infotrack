@@ -1,6 +1,8 @@
-﻿namespace RatingTracker.Application.Services;
+﻿using RatingTracker.Domain.DTOs;
+
+namespace RatingTracker.Application.Services;
 
 public interface ISearchService
 {
-    Task<int> SearchAsync(string keywords, string targetDomain, int maxResults, CancellationToken token = default);
+    Task<SearchResult> SearchAsync(string keywords, string targetDomain, int maxResults, CancellationToken token = default);
 }

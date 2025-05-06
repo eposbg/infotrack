@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { SearchService } from './search.service';
-import { provideHttpClient } from '@angular/common/http';
+import { SearchEngineResult, SearchResult } from './models';
 
 @Component({
   selector: 'app-search',
@@ -19,19 +19,22 @@ import { provideHttpClient } from '@angular/common/http';
 export class SearchComponent implements OnInit {
   searchForm!: FormGroup;
   loading = false;
+  searchResult?: SearchResult;
 
   constructor(private fb: FormBuilder, private searchService: SearchService) {}
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
-      keyword: ['', [Validators.required]],
-      targetDomain: ['', [Validators.required]],
+      keyword: ['land registry search', [Validators.required]],
+      targetDomain: ['infotrack.co.uk', [Validators.required]],
+      top: ['100', [Validators.required]],
     });
   }
 
   onSubmit() {
-    console.log(this.searchForm.value);
     if (this.searchForm.invalid) return;
+
+    this.loading = true;
 
     this.searchService
       .search({
@@ -40,8 +43,14 @@ export class SearchComponent implements OnInit {
         maxResults: 100,
       })
       .subscribe({
-        next: (res) => {},
+        next: (res) => {
+          this.loading = false;
+          this.searchResult = res;
+          console.log(res);
+          
+        },
         error: (err) => {
+          this.loading = false;
           console.error(err);
         },
       });
