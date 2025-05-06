@@ -1,34 +1,49 @@
-<div class="setup-form" [formGroup]="searchForm">
-  <h2>Check Ranking</h2>
+<p-panel header="Check Raiting" [formGroup]="searchForm">
   <form (submit)="onSubmit()">
-    <div class="input-group mb-3">
-      <label for="keyword" class="input-group-text">Keyword</label>
-      <input id="keyword" formControlName="keyword" />
-    </div>
+    <p-fluid class="card flex flex-wrap gap-4">
+      <div class="flex-auto">
+        <label for="search_for">Search for</label>
 
-    <div class="input-group mb-3">
-      <label class="input-group-text" for="targetDomain">Website</label>
-      <input
-        id="targetDomain"
-        formControlName="targetDomain"
-        class="border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-      />
-    </div>
-
-    <button type="submit" [disabled]="searchForm.invalid || loading">
-      {{ loading ? "Searching..." : "Check Rank" }}
-    </button>
-  </form>
-
-  @if(searchResult){
-  <div class="panel">
-    <div *ngFor="let engineResults of searchResult.ranks">
-      <h3>{{ engineResults.searchEngine }}</h3>
-      Ranks
-      <div *ngFor="let result of engineResults.ranks">
-        <p>Rank: {{ result }}</p>
+        <input
+          pInputText
+          id="search_for"
+          formControlName="keyword"
+          autocomplete="off"
+          placeholder="Search by keywords"
+        />
       </div>
+      <div class="flex-auto">
+        <label for="search_for">Target domain</label>
+
+        <input
+          pInputText
+          id="domain"
+          formControlName="targetDomain"
+          placeholder="Target domain"
+        />
+      </div>
+    </p-fluid>
+
+    <div class="actions">
+      <p-button
+        pRipple
+        type="submit"
+        [disabled]="searchForm.invalid || loading"
+      >
+        {{ loading ? "Searching..." : "Check Rank" }}
+      </p-button>
+    </div>
+  </form>
+</p-panel>
+
+@if(searchResult){
+<div class="panel">
+  <div *ngFor="let engineResults of searchResult.ranks">
+    <h3>{{ engineResults.searchEngine }}</h3>
+    Ranks
+    <div *ngFor="let result of engineResults.ranks">
+      <p>Rank: {{ result }}</p>
     </div>
   </div>
-  }
 </div>
+}

@@ -7,11 +7,22 @@ import {
   Validators,
 } from '@angular/forms';
 import { SearchService } from './search.service';
-import { SearchEngineResult, SearchResult } from './models';
+import { SearchResult } from './models';
+import { PanelModule } from 'primeng/panel';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { Fluid, FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-search',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    PanelModule,
+    ButtonModule,
+    InputTextModule,
+    FluidModule,
+  ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   providers: [SearchService],
@@ -25,8 +36,8 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
-      keyword: ['land registry search', [Validators.required]],
-      targetDomain: ['infotrack.co.uk', [Validators.required]],
+      keyword: ['', [Validators.required]],
+      targetDomain: ['', [Validators.required]],
       top: ['100', [Validators.required]],
     });
   }
@@ -47,7 +58,6 @@ export class SearchComponent implements OnInit {
           this.loading = false;
           this.searchResult = res;
           console.log(res);
-          
         },
         error: (err) => {
           this.loading = false;
