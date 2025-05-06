@@ -1,34 +1,35 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0-preview AS base
-WORKDIR /app
-EXPOSE 8080
-
-FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
+﻿# Stage 1: Build environment
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copy only .csproj files first (for layer caching)
-COPY ["RatingTracker.Api/RatingTracker.Api.csproj", "RatingTracker.Api/"]
-COPY ["RatingTracker.Domain/RatingTracker.Domain.csproj", "RatingTracker.Domain/"]
-COPY ["RatingTracker.Application/RatingTracker.Application.csproj", "RatingTracker.Application/"]
-COPY ["RatingTracker.Infrastructure/RatingTracker.Infrastructure.csproj", "RatingTracker.Infrastructure/"]
+# Copy only project files for better caching
+COPY RatingTracker.Api/RatingTracker.Api.csproj RatingTracker.Api/
+COPY RatingTracker.Domain/RatingTracker.Domain.csproj RatingTracker.Domain/
+COPY RatingTracker.Application/RatingTracker.Application.csproj RatingTracker.Application/
+COPY RatingTracker.Infrastructure/RatingTracker.Infrastructure.csproj RatingTracker.Infrastructure/
 
-# Restore NuGet packages
-RUN dotnet restore "RatingTracker.Api/RatingTracker.Api.csproj"
+# Restore dependencies
+RUN dotnet restore RatingTracker.Api/RatingTracker.Api.csproj
 
-# Copy full source
+# Copy everything else
 COPY . .
 
-# Build
+# Build project
 WORKDIR /src/RatingTracker.Api
-RUN dotnet build "RatingTracker.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build -c $BUILD_CONFIGURATION --no-restore -o /app/build
 
-# Publish
+# Stage 2: Publish
 FROM build AS publish
-RUN dotnet publish "RatingTracker.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish -c $BUILD_CONFIGURATION --no-restore -o /app/publish /p:UseAppHost=false
 
-# Final runtime image
-FROM base AS final
+# Stage 3: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
+EXPOSE 8080
+
+# Copy published output
 COPY --from=publish /app/publish .
 
+# Start the application
 ENTRYPOINT ["dotnet", "RatingTracker.Api.dll"]
