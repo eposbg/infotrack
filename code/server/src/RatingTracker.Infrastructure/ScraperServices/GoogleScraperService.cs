@@ -7,7 +7,7 @@ namespace RatingTracker.Infrastructure.ScraperServices;
 
 public class GoogleScraperService : ScraperServiceBase, IScraperService
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<GoogleScraperService> _logger;
 
     public GoogleScraperService(HttpClient httpClient, ILogger<GoogleScraperService> logger) : base(httpClient)
     {

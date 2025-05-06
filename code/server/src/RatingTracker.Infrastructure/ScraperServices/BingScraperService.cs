@@ -7,7 +7,7 @@ namespace RatingTracker.Infrastructure.ScraperServices;
 
 public class BingScraperService : ScraperServiceBase, IScraperService
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<BingScraperService> _logger;
 
     public BingScraperService(HttpClient httpClient, ILogger<BingScraperService> logger) : base(httpClient)
     {
