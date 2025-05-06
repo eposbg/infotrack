@@ -9,7 +9,7 @@ public class GoogleScraperService : ScraperServiceBase, IScraperService
 {
     private readonly ILogger _logger;
 
-    public GoogleScraperService(HttpClient httpClient, ILogger<GoogleScraperService> logger): base(httpClient)
+    public GoogleScraperService(HttpClient httpClient, ILogger<GoogleScraperService> logger) : base(httpClient)
     {
         _logger = logger;
     }
@@ -33,20 +33,26 @@ public class GoogleScraperService : ScraperServiceBase, IScraperService
         request.Headers.Add("Referer", "https://www.google.co.uk/");
         request.Headers.Add("Upgrade-Insecure-Requests", "1");
 
-        HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36");
-        var response = await HttpClient.SendAsync(request);
-        if (!response.IsSuccessStatusCode)
-            throw new Exception("Failed to fetch search results");
-
-        string html = await response.Content.ReadAsStringAsync();
-        var matches = Regex.Matches(html, @"<a href=""/url\?q=(.*?)&amp;");
-        var urls = matches.Select(m => HttpUtility.HtmlDecode(m.Groups[1].Value)).ToList();
-        
-        return new SearchEngineRanks
+        var result = new SearchEngineRanks
         {
             SearchEngine = "Google",
-            Ranks = GetRanking(urls, targetDomain)
         };
         
+        try
+        {
+            var response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Failed to fetch search results");
+
+            var html = await response.Content.ReadAsStringAsync(cancellationToken);
+            var matches = Regex.Matches(html, @"<a href=""/url\?q=(.*?)&amp;");
+            var urls = matches.Select(m => HttpUtility.HtmlDecode(m.Groups[1].Value)).ToList(); 
+            result.Ranks = GetRanking(urls, targetDomain);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+        }
+        return result;
     }
 }
