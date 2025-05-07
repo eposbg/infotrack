@@ -137,7 +137,7 @@ public class RankingControllerTests
 
         _rankingServiceMock.Reset();
         _rankingServiceMock
-            .Setup(s => s.GetWeeklyResultsAsync(keywords, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetHistoricalRatingsAsync(keywords, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act

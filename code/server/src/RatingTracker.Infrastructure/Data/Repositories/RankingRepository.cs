@@ -16,6 +16,13 @@ public class RankingRepository(RankingDbContext db) : IRankingRepository
             .Where(x => x.Date.Date >= now.Date);
     }
 
+    public IQueryable<Ranking> Get(string keywords, string targetDomain, DateTime fromDate)
+    {
+        return db.Rankings
+            .Where(x => x.TargetDomain == targetDomain)
+            .Where(x => x.Keywords == keywords)
+            .Where(x => x.Date.Date >= fromDate);
+    }
 
     public void DeleteByKeywordForDate(DateTime date, string keywords)
     {

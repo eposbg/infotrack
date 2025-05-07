@@ -22,20 +22,23 @@ public class RankingController(
     }
 
     [HttpGet]
-    [Route("monthly/history/{keywords}")]
-    public async Task<IActionResult> GetMontlyHistory(string keywords)
+    [Route("monthly/history/{keywords}/{targetDomain}")]
+    public async Task<IActionResult> GetMontlyHistory(string keywords, string targetDomain)
     {
         logger.LogInformation($"GetMontlyHistory by keywords {keywords}");
-        var results = await rankingService.GetMontlyResultsAsync(keywords, HttpContext.RequestAborted);
+        var results = await rankingService.GetHistoricalRatingsAsync(keywords, targetDomain,
+            DateTime.Today.AddMonths(-1), HttpContext.RequestAborted);
         return Ok(results);
     }
-    
+
     [HttpGet]
-    [Route("weekly/history/{keywords}")]
-    public async Task<IActionResult> GetWeeklyHistory(string keywords)
+    [Route("weekly/history/{keywords}/{targetDomain}")]
+    public async Task<IActionResult> GetWeeklyHistory(string keywords, string targetDomain)
     {
         logger.LogInformation($"GetWeeklyHistory keywords {keywords}");
-        var results = await rankingService.GetWeeklyResultsAsync(keywords, HttpContext.RequestAborted);
+        var results =
+            await rankingService.GetHistoricalRatingsAsync(keywords, targetDomain, DateTime.Today.AddDays(-7),
+                HttpContext.RequestAborted);
         return Ok(results);
     }
 }

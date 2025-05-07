@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -14,6 +14,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FluidModule } from 'primeng/fluid';
 import { DividerModule } from 'primeng/divider';
 import { BadgeModule } from 'primeng/badge';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -31,12 +32,16 @@ import { BadgeModule } from 'primeng/badge';
   styleUrl: './search.component.scss',
   providers: [RankingService],
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   searchForm!: FormGroup;
   loading = false;
   searchResult?: SearchResult;
+  private destroy$ = new Subject<void>();
 
-  constructor(private fb: FormBuilder, private rankingService: RankingService) {}
+  constructor(
+    private fb: FormBuilder,
+    private rankingService: RankingService
+  ) {}
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
@@ -57,6 +62,7 @@ export class SearchComponent implements OnInit {
         targetDomain: this.searchForm.get('targetDomain')?.value,
         maxResults: 100,
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
           this.loading = false;
@@ -68,6 +74,16 @@ export class SearchComponent implements OnInit {
           console.error(err);
         },
       });
+
+    this.rankingService
+      .getLastWeeksData(
+        this.searchForm.get('keyword')?.value,
+        this.searchForm.get('targetDomain')?.value
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((weeklyRates) => {
+        console.log(weeklyRates);
+      });
   }
 
   onExampleKeywordsClick() {
@@ -76,5 +92,10 @@ export class SearchComponent implements OnInit {
 
   onExampleDomainClick() {
     this.searchForm.get('targetDomain')?.setValue('www.bbc.co.uk');
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

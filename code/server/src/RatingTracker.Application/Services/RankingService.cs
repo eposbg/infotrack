@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RatingTracker.Application.Helpers;
 using RatingTracker.Domain.DTOs;
 using RatingTracker.Domain.Entitites;
@@ -60,13 +61,22 @@ public class RankingService(
         }
     }
 
-    public async Task<List<RankingDto>> GetWeeklyResultsAsync(string keywords, CancellationToken token = default)
+    public async Task<List<RankingDto>> GetHistoricalRatingsAsync(
+        string keywords,
+        string targetDomain,
+        DateTime fromDate,
+        CancellationToken token = default)
     {
-        throw new NotImplementedException();
-    }
+        var historicalData = rankingRepository.Get(
+            KeywordHelper.KeywordsCleanup(keywords), 
+            targetDomain, 
+            fromDate);
 
-    public async Task<List<RankingDto>> GetMontlyResultsAsync(string keywords, CancellationToken token = default)
-    {
-        throw new NotImplementedException();
+        return await historicalData.Select(x => new RankingDto
+        {
+            SearchEngine = x.SearchEngine,
+            TopRanking = x.TopRanking,
+            Date = x.Date,
+        }).ToListAsync(token);
     }
 }

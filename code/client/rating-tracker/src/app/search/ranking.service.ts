@@ -15,4 +15,10 @@ export class RankingService {
       searchQuery
     );
   }
+
+  getLastWeeksData(keywords: string, targetDomain: string): Observable<any> {
+    return this.httpClient.get(
+      `${environment.apiUrl}/ranking/weekly/history/${keywords}/${targetDomain}`
+    );
+  }
 }
