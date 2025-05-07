@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+body,
+.p-component {
+  font-family: "Inter", "Segoe UI", "Roboto", "Helvetica Neue", sans-serif !important;
+}
+
+.container {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

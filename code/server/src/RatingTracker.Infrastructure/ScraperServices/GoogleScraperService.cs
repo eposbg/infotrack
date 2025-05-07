@@ -36,6 +36,8 @@ public class GoogleScraperService : ScraperServiceBase, IScraperService
         var result = new SearchEngineRanks
         {
             SearchEngine = "Google",
+            Keywords = keywords,
+            TargetDomain = targetDomain,
         };
         
         try

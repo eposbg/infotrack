@@ -1,0 +1,106 @@
+<p-panel header="Check Raiting" [formGroup]="searchForm">
+  <form (submit)="onSubmit()">
+    <p-fluid class="card flex flex-wrap gap-4">
+      <div class="flex-auto">
+        <label for="search_for">Search for keywords</label>
+
+        <input
+          pInputText
+          id="search_for"
+          formControlName="keyword"
+          autocomplete="off"
+        />
+        <small id="targetDomain"
+          >e.g.: <a (click)="onExampleKeywordsClick()">News</a>
+        </small>
+      </div>
+
+      <div class="flex-auto">
+        <label for="search_for">Target domain</label>
+
+        <input pInputText id="domain" formControlName="targetDomain" />
+        <small id="targetDomain"
+          >e.g.: <a (click)="onExampleDomainClick()">www.bbc.co.uk</a></small
+        >
+      </div>
+    </p-fluid>
+
+    <div class="actions">
+      <p-button
+        pRipple
+        type="submit"
+        [disabled]="searchForm.invalid || loading"
+      >
+        {{ loading ? "Searching..." : "Check Rank" }}
+      </p-button>
+    </div>
+  </form>
+
+  @if(searchResult){
+  <p-divider />
+  <div *ngFor="let engineResults of searchResult.ranks">
+    <h3>{{ engineResults.searchEngine }}</h3>
+
+    <div class="card flex justify-center gap-2">
+      Ranks:
+      <p-badge
+        *ngFor="let result of engineResults.ranks"
+        [value]="result"
+        severity="secondary"
+      />
+    </div>
+  </div>
+
+  <p-divider />
+
+  <div class="historical-results">
+    <section>
+      <h3>Weekly ranking</h3>
+
+      <div *ngFor="let se of historicalWeeklyRankingEngines">
+        <h4>{{ se }}</h4>
+
+        <table class="table">
+          <tr>
+            <td>Date</td>
+            <td>Top Ranking</td>
+          </tr>
+
+          <tr
+            *ngFor="
+              let historicalWeeklyData of getHistoricalWeeklyForEngine(se)
+            "
+          >
+            <td>{{ historicalWeeklyData.date | date : "dd/MM/yyyy" }}</td>
+            <td>{{ historicalWeeklyData.topRanking }}</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h3>Montly ranking</h3>
+
+      <div *ngFor="let se of historicalMontlyRankingEngines">
+        <h4>{{ se }}</h4>
+
+        <table class="table">
+          <tr>
+            <td>Date</td>
+            <td>Top Ranking</td>
+          </tr>
+
+          <tr
+            *ngFor="
+              let historicalData of getHistoricalMontlyForEngine(se)
+            "
+          >
+            <td>{{ historicalData.date | date : "dd/MM/yyyy" }}</td>
+            <td>{{ historicalData.topRanking }}</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+  </div>
+  }
+</p-panel>

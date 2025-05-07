@@ -12,3 +12,9 @@ export interface SearchEngineResult {
   ranks: number[];
   searchEngine: string;
 }
+
+export interface Ranking {
+  searchEngine: string;
+  date: Date;
+  topRanking: number;
+}

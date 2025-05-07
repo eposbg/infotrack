@@ -28,6 +28,8 @@ public class BingScraperService : ScraperServiceBase, IScraperService
         var result = new SearchEngineRanks
         {
             SearchEngine = "Bing",
+            Keywords = keywords,
+            TargetDomain = targetDomain,
         };
 
         try
