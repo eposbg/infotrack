@@ -42,7 +42,7 @@ public class RankingService(
     {
         foreach (var searchEngineRank in result.Ranks)
         {
-            var now = DateTime.Now;
+            var now = DateTime.Today;
             var keywords = KeywordHelper.KeywordsCleanup(searchEngineRank.Keywords);
             var ranking = new Ranking
             {
