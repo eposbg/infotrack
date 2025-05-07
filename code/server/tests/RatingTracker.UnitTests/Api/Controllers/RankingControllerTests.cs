@@ -14,7 +14,7 @@ public class RankingControllerTests
     private readonly Mock<IRankingService> _rankingServiceMock;
     private readonly Mock<ILogger<RankingController>> _loggerMock;
     private readonly RankingController _controller;
-    
+
     public RankingControllerTests()
     {
         _rankingServiceMock = new Mock<IRankingService>();
@@ -30,7 +30,7 @@ public class RankingControllerTests
             }
         };
     }
-    
+
     [Fact]
     public async Task Search_ShouldReturn200Ok_WithSearchResult()
     {
@@ -46,15 +46,24 @@ public class RankingControllerTests
         {
             Ranks = new List<SearchEngineRanks>
             {
-                new SearchEngineRanks { SearchEngine = "Google", Ranks = new List<int> { 1, 10 }, Keywords = query.Keywords, TargetDomain = query.TargetDomain },
-                new SearchEngineRanks { SearchEngine = "Bing", Ranks = new List<int> { 3 }, Keywords = query.Keywords, TargetDomain = query.TargetDomain  }
+                new SearchEngineRanks
+                {
+                    SearchEngine = "Google", Ranks = new List<int> { 1, 10 }, Keywords = query.Keywords,
+                    TargetDomain = query.TargetDomain
+                },
+                new SearchEngineRanks
+                {
+                    SearchEngine = "Bing", Ranks = new List<int> { 3 }, Keywords = query.Keywords,
+                    TargetDomain = query.TargetDomain
+                }
             }
         };
 
         _rankingServiceMock.Reset();
-        _rankingServiceMock.Setup(s => s.SearchAsync(query.Keywords, query.TargetDomain, 100, It.IsAny<CancellationToken>()))
+        _rankingServiceMock.Setup(s =>
+                s.SearchAsync(query.Keywords, query.TargetDomain, 100, It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeResult);
-       
+
         // Act
         var response = await _controller.Search(query);
 
@@ -79,7 +88,8 @@ public class RankingControllerTests
         };
         _loggerMock.Reset();
         _rankingServiceMock.Reset();
-        _rankingServiceMock.Setup(s => s.SearchAsync(query.Keywords, query.TargetDomain, 50, It.IsAny<CancellationToken>()))
+        _rankingServiceMock.Setup(s =>
+                s.SearchAsync(query.Keywords, query.TargetDomain, 50, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SearchResult());
 
 
@@ -97,8 +107,8 @@ public class RankingControllerTests
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
-    
-    
+
+
     [Fact]
     public async Task GetMonthlyHistory_ShouldReturnOk_WithExpectedResults()
     {
@@ -111,13 +121,14 @@ public class RankingControllerTests
 
         _loggerMock.Reset();
         _rankingServiceMock.Reset();
-        
+
         _rankingServiceMock
-            .Setup(s => s.GetMontlyResultsAsync(keywords, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetHistoricalRatingsAsync(keywords, It.IsAny<string>(), It.IsAny<DateTime>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act
-        var result = await _controller.GetMontlyHistory(keywords);
+        var result = await _controller.GetMontlyHistory(keywords, "fake domain");
 
         // Assert
         var okResult = result as OkObjectResult;
@@ -137,11 +148,12 @@ public class RankingControllerTests
 
         _rankingServiceMock.Reset();
         _rankingServiceMock
-            .Setup(s => s.GetHistoricalRatingsAsync(keywords, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetHistoricalRatingsAsync(keywords, It.IsAny<string>(), It.IsAny<DateTime>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act
-        var result = await _controller.GetWeeklyHistory(keywords);
+        var result = await _controller.GetWeeklyHistory(keywords, "fake domain");
 
         // Assert
         var okResult = result as OkObjectResult;
