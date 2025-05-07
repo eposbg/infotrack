@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RankingService } from './ranking.service';
-import { SearchResult } from './models';
+import { Ranking, SearchResult } from './models';
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -36,7 +36,17 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchForm!: FormGroup;
   loading = false;
   searchResult?: SearchResult;
+  historicalWeeklyData: Ranking[] = [];
+  historicalMontlyData: Ranking[] = [];
   private destroy$ = new Subject<void>();
+
+  get historicalWeeklyRankingEngines(): string[] {
+    return [...new Set(this.historicalWeeklyData.map((x) => x.searchEngine))];
+  }
+
+  get historicalMontlyRankingEngines(): string[] {
+    return [...new Set(this.historicalMontlyData.map((x) => x.searchEngine))];
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -76,13 +86,23 @@ export class SearchComponent implements OnInit, OnDestroy {
       });
 
     this.rankingService
-      .getLastWeeksData(
+      .getLastWeekData(
         this.searchForm.get('keyword')?.value,
         this.searchForm.get('targetDomain')?.value
       )
       .pipe(takeUntil(this.destroy$))
       .subscribe((weeklyRates) => {
-        console.log(weeklyRates);
+        this.historicalWeeklyData = weeklyRates;
+      });
+
+    this.rankingService
+      .getLastMonthData(
+        this.searchForm.get('keyword')?.value,
+        this.searchForm.get('targetDomain')?.value
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((montlyRates) => {
+        this.historicalMontlyData = montlyRates;
       });
   }
 
@@ -92,6 +112,18 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   onExampleDomainClick() {
     this.searchForm.get('targetDomain')?.setValue('www.bbc.co.uk');
+  }
+
+  getHistoricalWeeklyForEngine(searchEngine: string) {
+    return this.historicalWeeklyData.filter(
+      (x) => x.searchEngine === searchEngine
+    );
+  }
+
+  getHistoricalMontlyForEngine(searchEngine: string) {
+    return this.historicalMontlyData.filter(
+      (x) => x.searchEngine === searchEngine
+    );
   }
 
   ngOnDestroy(): void {

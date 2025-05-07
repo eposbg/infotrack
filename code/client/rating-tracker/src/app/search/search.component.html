@@ -10,14 +10,18 @@
           formControlName="keyword"
           autocomplete="off"
         />
-        <small id="targetDomain">e.g.: <a (click)="onExampleKeywordsClick()">News</a> </small>
+        <small id="targetDomain"
+          >e.g.: <a (click)="onExampleKeywordsClick()">News</a>
+        </small>
       </div>
 
       <div class="flex-auto">
         <label for="search_for">Target domain</label>
 
         <input pInputText id="domain" formControlName="targetDomain" />
-        <small id="targetDomain">e.g.: <a (click)="onExampleDomainClick()">www.bbc.co.uk</a></small>
+        <small id="targetDomain"
+          >e.g.: <a (click)="onExampleDomainClick()">www.bbc.co.uk</a></small
+        >
       </div>
     </p-fluid>
 
@@ -47,5 +51,56 @@
     </div>
   </div>
 
+  <p-divider />
+
+  <div class="historical-results">
+    <section>
+      <h3>Weekly ranking</h3>
+
+      <div *ngFor="let se of historicalWeeklyRankingEngines">
+        <h4>{{ se }}</h4>
+
+        <table class="table">
+          <tr>
+            <td>Date</td>
+            <td>Top Ranking</td>
+          </tr>
+
+          <tr
+            *ngFor="
+              let historicalWeeklyData of getHistoricalWeeklyForEngine(se)
+            "
+          >
+            <td>{{ historicalWeeklyData.date | date : "dd/MM/yyyy" }}</td>
+            <td>{{ historicalWeeklyData.topRanking }}</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h3>Montly ranking</h3>
+
+      <div *ngFor="let se of historicalMontlyRankingEngines">
+        <h4>{{ se }}</h4>
+
+        <table class="table">
+          <tr>
+            <td>Date</td>
+            <td>Top Ranking</td>
+          </tr>
+
+          <tr
+            *ngFor="
+              let historicalData of getHistoricalMontlyForEngine(se)
+            "
+          >
+            <td>{{ historicalData.date | date : "dd/MM/yyyy" }}</td>
+            <td>{{ historicalData.topRanking }}</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+  </div>
   }
 </p-panel>

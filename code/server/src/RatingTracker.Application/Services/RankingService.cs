@@ -68,15 +68,18 @@ public class RankingService(
         CancellationToken token = default)
     {
         var historicalData = rankingRepository.Get(
-            KeywordHelper.KeywordsCleanup(keywords), 
-            targetDomain, 
+            KeywordHelper.KeywordsCleanup(keywords),
+            targetDomain,
             fromDate);
 
-        return await historicalData.Select(x => new RankingDto
-        {
-            SearchEngine = x.SearchEngine,
-            TopRanking = x.TopRanking,
-            Date = x.Date,
-        }).ToListAsync(token);
+        return await historicalData
+            .Select(x => new RankingDto
+            {
+                SearchEngine = x.SearchEngine,
+                TopRanking = x.TopRanking,
+                Date = x.Date,
+            })
+            .OrderByDescending(x => x.Date)
+            .ToListAsync(token);
     }
 }

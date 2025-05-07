@@ -15,3 +15,23 @@ a {
   text-decoration: none;
   cursor: pointer;
 }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.historical-results {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  justify-items: stretch;
+  justify-content: stretch;
+
+  section {
+    width: 100%;
+  }
+}
