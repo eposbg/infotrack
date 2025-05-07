@@ -41,14 +41,19 @@ builder.Services.Configure<SearchEngineOptions>(builder.Configuration.GetSection
 builder.Services.AddDbContext<RankingDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<RankingDbContext>();
     db.Database.Migrate();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<RankingDbContext>();
+    db.Database.Migrate(); 
+    DbInitializer.Seed(db); 
 }
 
 if (app.Environment.IsDevelopment())
