@@ -43,17 +43,12 @@ builder.Services.AddDbContext<RankingDbContext>(options =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<RankingDbContext>();
-    db.Database.Migrate();
-}
 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<RankingDbContext>();
-    db.Database.Migrate(); 
-    DbInitializer.Seed(db); 
+    db.Database.Migrate();
+    DbInitializer.Seed(db);
 }
 
 if (app.Environment.IsDevelopment())
