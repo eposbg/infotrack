@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SearchService } from './search.service';
+import { RankingService } from './ranking.service';
 import { SearchResult } from './models';
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
@@ -29,14 +29,14 @@ import { BadgeModule } from 'primeng/badge';
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
-  providers: [SearchService],
+  providers: [RankingService],
 })
 export class SearchComponent implements OnInit {
   searchForm!: FormGroup;
   loading = false;
   searchResult?: SearchResult;
 
-  constructor(private fb: FormBuilder, private searchService: SearchService) {}
+  constructor(private fb: FormBuilder, private rankingService: RankingService) {}
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
@@ -51,7 +51,7 @@ export class SearchComponent implements OnInit {
 
     this.loading = true;
 
-    this.searchService
+    this.rankingService
       .search({
         keywords: this.searchForm.get('keyword')?.value,
         targetDomain: this.searchForm.get('targetDomain')?.value,

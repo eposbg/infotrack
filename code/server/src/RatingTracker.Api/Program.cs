@@ -1,18 +1,27 @@
+using Microsoft.EntityFrameworkCore;
 using RatingTracker.Application.Services;
+using RatingTracker.Domain.Repositories;
 using RatingTracker.Domain.Settings;
+using RatingTracker.Infrastructure.Data;
+using RatingTracker.Infrastructure.Data.Repositories;
 using RatingTracker.Infrastructure.ScraperServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApiDocument(); 
+builder.Services.AddOpenApiDocument();
 
-builder.Services.AddTransient<ISearchService, SearchService>();
+// Services
+builder.Services.AddTransient<IRankingService, RankingService>();
+
+// Scraping Services
 builder.Services.AddTransient<IScraperFactory, ScraperFactory>();
-
 builder.Services.AddHttpClient<GoogleScraperService>();
 builder.Services.AddHttpClient<BingScraperService>();
 builder.Services.AddSingleton<IScraperFactory, ScraperFactory>();
+
+// Repositories
+builder.Services.AddTransient<IRankingRepository, RankingRepository>();
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
 
@@ -29,8 +38,18 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<SearchEngineOptions>(builder.Configuration.GetSection("SearchEngines"));
 
 
+builder.Services.AddDbContext<RankingDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<RankingDbContext>();
+    db.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {

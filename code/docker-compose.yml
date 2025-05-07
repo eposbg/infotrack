@@ -1,5 +1,18 @@
 version: "3.8"
 services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    ports:
+      - "1434:1433"
+    environment:
+      SA_PASSWORD: "YourStrong!Password"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - app-network
+
   server:
     build:
       context: ./server/src
@@ -10,6 +23,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     networks:
       - app-network
+    depends_on:
+      - sqlserver
 
   client:
     build:
@@ -23,3 +38,6 @@ services:
 
 networks:
   app-network:
+
+volumes:
+  sqlserver_data:
