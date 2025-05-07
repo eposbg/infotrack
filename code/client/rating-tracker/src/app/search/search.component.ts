@@ -40,8 +40,8 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
-      keyword: ['', [Validators.required]],
-      targetDomain: ['', [Validators.required]],
+      keyword: ['News weather   next   10 days', [Validators.required]],
+      targetDomain: ['metoffice.gov.uk', [Validators.required]],
       top: ['100', [Validators.required]],
     });
   }
